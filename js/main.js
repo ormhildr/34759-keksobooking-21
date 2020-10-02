@@ -162,11 +162,14 @@ const renderCard = (ad) => {
 
   cardElement.querySelector(`.popup__avatar`).src = ad.author.avatar;
 
-  for (const child of cardElement.childNodes) {
-    if (!child.firstChild) {
-      cardElement.removeChild(child);
+  const hasChildren = (element) => {
+    if (element.children.length === 0) {
+      element.remove();
     }
-  }
+  };
+
+  hasChildren(popupFeatures);
+  hasChildren(popupPhotos);
 
   return cardElement;
 };
