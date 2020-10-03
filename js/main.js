@@ -5,6 +5,7 @@ const MIN_Y = 130;
 const MAX_Y = 630;
 const PIN_WIDTH = 65;
 const PIN_HEIGHT = 65;
+const POINT_HEIGHT = 20;
 const MIN_PRICE = 30000;
 const MAX_PRICE = 100000;
 const AMOUNT_ADS = 8;
@@ -58,11 +59,113 @@ const ALL_PHOTOS = [
   `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
 ];
 
+const RoomsAmount = {
+  ONE: `1`,
+  TWO: `2`,
+  THREE: `3`,
+  HUNDRED: `100`
+};
+
+const GuestsAmount = {
+  ZERO: `0`,
+  ONE: `1`,
+  TWO: `2`,
+  THREE: `3`
+};
+
+const roomsForGuests = {
+  1: `«для 1 гостя»`,
+  2: `«для 2 гостей» или «для 1 гостя»`,
+  3: `«для 3 гостей, «для 2 гостей» или «для 1 гостя»`,
+  100: `«не для гостей»`
+};
+
 const map = document.querySelector(`.map`);
 const pins = map.querySelector(`.map__pins`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const mapFilters = map.querySelector(`.map__filters-container`);
+const mainPin = document.querySelector(`.map__pin--main`);
+
+
+const adForm = document.querySelector(`.ad-form`);
+const adAddress = adForm.querySelector(`input[name=address]`);
+const mapForm = document.querySelector(`.map__filters`);
+const roomsAmount = document.querySelector(`#room_number`);
+const guestsAmount = document.querySelector(`#capacity`);
+
+let isDisable = false;
+
+const getChangeGuests = () => {
+  guestsAmount.setCustomValidity(``);
+
+  switch (roomsAmount.value) {
+    case RoomsAmount.ONE:
+      if (guestsAmount.value !== GuestsAmount.ONE) {
+        guestsAmount.setCustomValidity(roomsForGuests[roomsAmount.value]);
+      }
+      break;
+    case RoomsAmount.TWO:
+      if (guestsAmount.value !== GuestsAmount.ONE && guestsAmount.value !== GuestsAmount.TWO) {
+        guestsAmount.setCustomValidity(roomsForGuests[roomsAmount.value]);
+      }
+      break;
+    case RoomsAmount.THREE:
+      if (guestsAmount.value === GuestsAmount.ZERO) {
+        guestsAmount.setCustomValidity(roomsForGuests[roomsAmount.value]);
+      }
+      break;
+    case RoomsAmount.HUNDRED:
+      if (guestsAmount.value !== GuestsAmount.ZERO) {
+        guestsAmount.setCustomValidity(roomsForGuests[roomsAmount.value]);
+      }
+      break;
+  }
+};
+
+
+const getStatusForm = (form, status) => {
+  for (let element of form.children) {
+    element.disabled = status;
+  }
+};
+
+const getDisable = () => {
+  adForm.classList.add(`ad-form--disabled`);
+  map.classList.add(`map--faded`);
+
+  getStatusForm(adForm, true);
+  getStatusForm(mapForm, true);
+
+  adAddress.value = getAddressDisable();
+
+  isDisable = true;
+};
+
+const getActive = () => {
+  const ads = generateAds(AMOUNT_ADS);
+
+  if (isDisable === true) {
+    adForm.classList.remove(`ad-form--disabled`);
+    map.classList.remove(`map--faded`);
+
+    getStatusForm(adForm, false);
+    getStatusForm(mapForm, false);
+
+    getChangeGuests();
+
+    pins.appendChild(renderPins(ads));
+    mapFilters.before(renderCard(ads[0]));
+  }
+};
+
+const getAddressDisable = () => {
+  return `${Math.floor(parseInt(mainPin.style.left, 10) + PIN_WIDTH / 2)}, ${Math.floor(parseInt(mainPin.style.top, 10) + PIN_HEIGHT / 2)}`;
+};
+
+const getAddressActive = (pin) => {
+  return `${Math.floor(parseInt(pin.style.left, 10) + PIN_WIDTH / 2)}, ${Math.floor(parseInt(pin.style.top, 10) + PIN_HEIGHT + POINT_HEIGHT)}`;
+};
 
 const getRandom = (min = 0, max = 100) => {
   return Math.floor(min + Math.random() * (max + 1 - min));
@@ -198,9 +301,21 @@ const renderPins = (arr) => {
   return fragment;
 };
 
-const ads = generateAds(AMOUNT_ADS);
+getDisable();
 
-pins.appendChild(renderPins(ads));
-mapFilters.before(renderCard(ads[0]));
+mainPin.addEventListener(`mousedown`, (evt) => {
+  if (evt.which === 1) {
+    getActive();
+    adAddress.value = getAddressActive(mainPin);
+  }
+});
 
-map.classList.remove(`map--faded`);
+mainPin.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
+    getActive();
+    adAddress.value = getAddressActive(mainPin);
+  }
+});
+
+roomsAmount.addEventListener(`change`, getChangeGuests);
+guestsAmount.addEventListener(`change`, getChangeGuests);
