@@ -29,6 +29,7 @@
 
       setFormEnabled(adForm, true);
       setFormEnabled(mapForm, true);
+      isPageEnabled = true;
 
       window.form.validateGuests();
 
