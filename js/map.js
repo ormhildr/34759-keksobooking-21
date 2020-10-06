@@ -32,6 +32,7 @@
       isPageEnabled = true;
 
       window.form.validateGuests();
+      adAddress.value = getAddressCoordinates();
 
       pins.appendChild(window.pin.renderPins(ads));
       mapFilters.before(window.card.renderCard(ads[0]));
@@ -53,13 +54,11 @@
   mainPin.addEventListener(`mousedown`, (evt) => {
     if (evt.which === 1) {
       enablePage();
-      adAddress.value = getAddressCoordinates();
     }
   });
 
   mainPin.addEventListener(`click`, () => {
     enablePage();
-    adAddress.value = getAddressCoordinates();
   });
 
   window.map = {
@@ -70,9 +69,9 @@
       setFormEnabled(adForm, false);
       setFormEnabled(mapForm, false);
 
-      adAddress.value = getAddressCoordinates();
-
       isPageEnabled = false;
+
+      adAddress.value = getAddressCoordinates();
     }
   };
 })();
