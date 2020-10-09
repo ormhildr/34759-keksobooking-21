@@ -19,6 +19,15 @@
     }
   };
 
+  const ALL_FEATURES = [
+    `wifi`,
+    `dishwasher`,
+    `parking`,
+    `washer`,
+    `elevator`,
+    `conditioner`
+  ];
+
   const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
   const cardElement = cardTemplate.cloneNode(true);
@@ -51,7 +60,7 @@
       popupCapacity.textContent = `${ad.offer.rooms} комнаты для ${ad.offer.guests} гостей`;
       popupTime.textContent = `Заезд после ${ad.offer.checkin}, выезд до ${ad.offer.checkout}`;
 
-      for (const element of window.data.ALL_FEATURES) {
+      for (const element of ALL_FEATURES) {
         if (!ad.offer.features.includes(element)) {
           popupFeatures.removeChild(popupFeatures.querySelector(`.popup__feature--${element}`));
         }
