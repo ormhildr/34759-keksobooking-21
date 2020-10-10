@@ -20,9 +20,24 @@
     }
   };
 
-  const enablePage = () => {
-    const ads = window.data.generateAds(8);
+  const successHandler = (ads) => {
+    pins.appendChild(window.pin.renderPins(ads));
+    mapFilters.before(window.card.renderCard(ads[0]));
+  };
 
+  const errorHandler = function (errorMessage) {
+    const node = document.createElement(`div`);
+    node.style = `z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white`;
+    node.style.position = `fixed`;
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = `30px`;
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement(`afterbegin`, node);
+  };
+
+  const enablePage = () => {
     if (isPageEnabled === false) {
       adForm.classList.remove(`ad-form--disabled`);
       map.classList.remove(`map--faded`);
@@ -34,8 +49,7 @@
       window.form.validateGuests();
       adAddress.value = getAddressCoordinates();
 
-      pins.appendChild(window.pin.renderPins(ads));
-      mapFilters.before(window.card.renderCard(ads[0]));
+      window.backend.load(successHandler, errorHandler);
     }
   };
 
