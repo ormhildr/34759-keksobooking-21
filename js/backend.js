@@ -2,7 +2,8 @@
 
 (() => {
   const URL = {
-    load: `https://21.javascript.pages.academy/keksobooking/data`
+    load: `https://21.javascript.pages.academy/keksobooking/data`,
+    save: `https://21.javascript.pages.academy/keksobooking`
   };
 
   const StatusCode = {
@@ -39,7 +40,12 @@
     createXhr(`GET`, URL.load, onLoad, onError).send();
   };
 
+  const save = (data, onLoad, onError) => {
+    createXhr(`POST`, URL.save, onLoad, onError).send(data);
+  };
+
   window.backend = {
-    load
+    load,
+    save
   };
 })();

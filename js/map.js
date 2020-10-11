@@ -8,7 +8,7 @@
   const mapFilters = map.querySelector(`.map__filters-container`);
   const mainPin = document.querySelector(`.map__pin--main`);
 
-  const adForm = document.querySelector(`.ad-form`);
+  const adForm = window.form.adForm;
   const adAddress = adForm.querySelector(`input[name=address]`);
   const mapForm = document.querySelector(`.map__filters`);
 

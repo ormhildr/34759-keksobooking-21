@@ -68,13 +68,15 @@
 
       popupDescr.textContent = ad.offer.description;
 
+      popupPhotos.querySelectorAll(`.popup__photo`).forEach((el) => {
+        popupPhotos.removeChild(el);
+      });
+
       for (const photo of ad.offer.photos) {
         const imgPhoto = popupPhoto.cloneNode(true);
         popupPhotos.appendChild(imgPhoto);
         imgPhoto.src = photo;
       }
-
-      popupPhotos.removeChild(popupPhoto);
 
       popupAvatar.src = ad.author.avatar;
 
