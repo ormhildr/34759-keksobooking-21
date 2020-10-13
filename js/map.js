@@ -21,8 +21,35 @@
   };
 
   const successHandler = (ads) => {
-    pins.appendChild(window.pin.renderPins(ads));
-    mapFilters.before(window.card.renderCard(ads[0]));
+    for (let i = 0; i < ads.length; i++) {
+      const pin = window.pin.renderPin(ads[i]);
+      pins.appendChild(pin);
+      pin.addEventListener(`click`, () => {
+        const pinChildren = Array.from(pins.children);
+        pinChildren.forEach((child) => {
+          if (child.classList.contains(`map__pin--active`)) {
+            child.classList.remove(`map__pin--active`);
+          }
+        });
+        pin.classList.add(`map__pin--active`);
+        if (map.contains(map.querySelector(`.map__card`))) {
+          map.removeChild(map.querySelector(`.map__card`));
+        }
+        mapFilters.before(window.card.renderCard(ads[i]));
+
+        const currentCard = map.querySelector(`.map__card`);
+        const cardClose = currentCard.querySelector(`.popup__close`);
+
+        cardClose.addEventListener(`click`, () => {
+          currentCard.remove();
+          pin.classList.remove(`map__pin--active`);
+        });
+        document.addEventListener(`keydown`, (evt) => {
+          window.util.isEscEvent(evt, currentCard);
+          pin.classList.remove(`map__pin--active`);
+        });
+      });
+    }
   };
 
   const errorHandler = function (errorMessage) {
@@ -47,6 +74,7 @@
       isPageEnabled = true;
 
       window.form.validateGuests();
+      window.form.validatePrice();
       adAddress.value = getAddressCoordinates();
 
       window.backend.load(successHandler, errorHandler);
@@ -76,6 +104,7 @@
   });
 
   window.map = {
+    map,
     disablePage: () => {
       adForm.classList.add(`ad-form--disabled`);
       map.classList.add(`map--faded`);
