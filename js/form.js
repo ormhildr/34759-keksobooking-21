@@ -66,11 +66,8 @@
   };
 
   const resetForm = () => {
-    document.querySelectorAll(`.map__pin`).forEach((el) => {
-      if (!el.classList.contains(`map__pin--main`)) {
-        el.remove();
-      }
-    });
+    window.util.removeAdPins();
+
     if (window.map.map.contains(window.map.map.querySelector(`.map__card`))) {
       window.map.map.querySelector(`.map__card`).remove();
     }
