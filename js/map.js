@@ -2,6 +2,7 @@
 
 (() => {
   const PIN_TAIL_SIZE = 20;
+  const MAX_SIMILAR_ADS_COUNT = 5;
 
   const map = document.querySelector(`.map`);
   const pins = map.querySelector(`.map__pins`);
@@ -11,8 +12,11 @@
   const adForm = window.form.adForm;
   const adAddress = adForm.querySelector(`input[name=address]`);
   const mapForm = document.querySelector(`.map__filters`);
+  const houseType = mapForm.querySelector(`#housing-type`);
 
   let isPageEnabled = true;
+
+  let mainAds = [];
 
   const setFormEnabled = (form, enabled) => {
     for (let element of form.children) {
@@ -20,21 +24,52 @@
     }
   };
 
-  const successHandler = (ads) => {
-    for (let i = 0; i < ads.length; i++) {
+  const filterType = () => {
+    const result = mainAds.filter((ad) => {
+      return ad.offer.type === houseType.value;
+    });
+
+    removeActiveCard();
+
+    if (result.length === 0) {
+      updateAds(mainAds);
+    } else {
+      updateAds(result);
+    }
+  };
+
+  const removeActivePin = () => {
+    Array.from(pins.children).forEach((child) => {
+      if (child.classList.contains(`map__pin--active`)) {
+        child.classList.remove(`map__pin--active`);
+      }
+    });
+  };
+
+  const removeActiveCard = () => {
+    if (map.contains(map.querySelector(`.map__card`))) {
+      map.removeChild(map.querySelector(`.map__card`));
+    }
+  };
+
+  const updateAds = (ads) => {
+    const takeNumber = ads.length > MAX_SIMILAR_ADS_COUNT
+      ? MAX_SIMILAR_ADS_COUNT
+      : ads.length;
+
+    window.util.removeAdPins();
+
+    for (let i = 0; i < takeNumber; i++) {
       const pin = window.pin.renderPin(ads[i]);
       pins.appendChild(pin);
+
       pin.addEventListener(`click`, () => {
-        const pinChildren = Array.from(pins.children);
-        pinChildren.forEach((child) => {
-          if (child.classList.contains(`map__pin--active`)) {
-            child.classList.remove(`map__pin--active`);
-          }
-        });
+        removeActivePin();
+
         pin.classList.add(`map__pin--active`);
-        if (map.contains(map.querySelector(`.map__card`))) {
-          map.removeChild(map.querySelector(`.map__card`));
-        }
+
+        removeActiveCard();
+
         mapFilters.before(window.card.renderCard(ads[i]));
 
         const currentCard = map.querySelector(`.map__card`);
@@ -50,6 +85,11 @@
         });
       });
     }
+  };
+
+  const successHandler = (data) => {
+    mainAds = data;
+    updateAds(data);
   };
 
   const errorHandler = function (errorMessage) {
@@ -102,6 +142,8 @@
   mainPin.addEventListener(`click`, () => {
     enablePage();
   });
+
+  houseType.addEventListener(`change`, filterType);
 
   window.map = {
     map,
