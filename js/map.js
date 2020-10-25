@@ -1,8 +1,6 @@
 'use strict';
 
 (() => {
-  const MAX_SIMILAR_ADS_COUNT = 5;
-
   const MainPinSizes = {
     WIDTH: 65,
     HEIGHT: 87
@@ -22,8 +20,6 @@
 
   const adForm = window.form.adForm;
   const adAddress = adForm.querySelector(`input[name=address]`);
-  const mapForm = document.querySelector(`.map__filters`);
-  const houseType = mapForm.querySelector(`#housing-type`);
 
   let isPageEnabled = true;
 
@@ -32,20 +28,6 @@
   const setFormEnabled = (form, enabled) => {
     for (let element of form.children) {
       element.disabled = !enabled;
-    }
-  };
-
-  const filterType = () => {
-    const result = mainAds.filter((ad) => {
-      return ad.offer.type === houseType.value;
-    });
-
-    removeActiveCard();
-
-    if (result.length === 0) {
-      updateAds(mainAds);
-    } else {
-      updateAds(result);
     }
   };
 
@@ -64,14 +46,10 @@
   };
 
   const updateAds = (ads) => {
-    const takeNumber = ads.length > MAX_SIMILAR_ADS_COUNT
-      ? MAX_SIMILAR_ADS_COUNT
-      : ads.length;
-
     window.util.removeAdPins();
 
-    for (let i = 0; i < takeNumber; i++) {
-      const pin = window.pin.renderPin(ads[i]);
+    ads.forEach((ad) => {
+      const pin = window.pin.renderPin(ad);
       pins.appendChild(pin);
 
       pin.addEventListener(`click`, () => {
@@ -81,7 +59,7 @@
 
         removeActiveCard();
 
-        mapFilters.before(window.card.renderCard(ads[i]));
+        mapFilters.before(window.card.renderCard(ad));
 
         const currentCard = map.querySelector(`.map__card`);
         const cardClose = currentCard.querySelector(`.popup__close`);
@@ -95,12 +73,17 @@
           pin.classList.remove(`map__pin--active`);
         });
       });
-    }
+    });
   };
+
+  const getFilteredPins = window.debounce(() => {
+    removeActiveCard();
+    updateAds(window.filter.getFilterAds(mainAds));
+  });
 
   const successHandler = (data) => {
     mainAds = data;
-    updateAds(data);
+    updateAds(window.filter.getFilterAds(mainAds));
   };
 
   const errorHandler = function (errorMessage) {
@@ -121,7 +104,7 @@
       map.classList.remove(`map--faded`);
 
       setFormEnabled(adForm, true);
-      setFormEnabled(mapForm, true);
+      setFormEnabled(window.filter.mapForm, true);
       isPageEnabled = true;
 
       window.form.validateGuests();
@@ -208,7 +191,7 @@
     enablePage();
   });
 
-  houseType.addEventListener(`change`, filterType);
+  window.filter.mapForm.addEventListener(`change`, getFilteredPins);
 
   window.map = {
     map,
@@ -217,7 +200,7 @@
       map.classList.add(`map--faded`);
 
       setFormEnabled(adForm, false);
-      setFormEnabled(mapForm, false);
+      setFormEnabled(window.filter.mapForm, false);
 
       isPageEnabled = false;
 
