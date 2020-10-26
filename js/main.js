@@ -1,6 +1,3 @@
 'use strict';
 
-(() => {
-  window.map.disablePage();
-})();
-
+window.map.disablePage();
