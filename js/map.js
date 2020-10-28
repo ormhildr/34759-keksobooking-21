@@ -61,21 +61,32 @@ const updateAds = (ads) => {
       mapFilters.before(window.card.renderCard(ad));
 
       const currentCard = map.querySelector(`.map__card`);
-      const cardClose = currentCard.querySelector(`.popup__close`);
+      const cardCloser = currentCard.querySelector(`.popup__close`);
 
-      cardClose.addEventListener(`click`, () => {
+      const closeCard = () => {
         currentCard.remove();
         pin.classList.remove(`map__pin--active`);
+
+        document.removeEventListener(`keydown`, onEscPressCard);
+      };
+
+      const onEscPressCard = (evt) => {
+        if (evt.key === window.util.Key.ESCAPE) {
+          evt.preventDefault();
+          closeCard();
+        }
+      };
+
+      cardCloser.addEventListener(`click`, () => {
+        closeCard();
       });
-      document.addEventListener(`keydown`, (evt) => {
-        window.util.isEscEvent(evt, currentCard);
-        pin.classList.remove(`map__pin--active`);
-      });
+
+      document.addEventListener(`keydown`, onEscPressCard);
     });
   });
 };
 
-const getFilteredPins = window.debounce(() => {
+const onFilteredPins = window.debounce(() => {
   removeActiveCard();
   updateAds(window.filter.getFilterAds(mainAds));
 });
@@ -106,8 +117,8 @@ const enablePage = () => {
     setFormEnabled(window.filter.mapForm, true);
     isPageEnabled = true;
 
-    window.form.validateGuests();
-    window.form.validatePrice();
+    window.form.onValidateGuests();
+    window.form.onValidatePrice();
     adAddress.value = getAddressCoordinates();
 
     window.backend.load(successHandler, errorHandler);
@@ -190,7 +201,7 @@ mainPin.addEventListener(`click`, () => {
   enablePage();
 });
 
-window.filter.mapForm.addEventListener(`change`, getFilteredPins);
+window.filter.mapForm.addEventListener(`change`, onFilteredPins);
 
 window.map = {
   map,

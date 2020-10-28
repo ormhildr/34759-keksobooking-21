@@ -36,7 +36,6 @@ const hasChildren = (element) => {
 };
 
 window.card = {
-  cardTemplate,
   renderCard: (ad) => {
     const cardElement = cardTemplate.cloneNode(true);
     const popupFeatures = cardElement.querySelector(`.popup__features`);

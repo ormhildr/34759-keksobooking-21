@@ -79,31 +79,53 @@ const loadPhoto = (currentFile, currentPhoto) => {
   }
 };
 
+const onEscPressError = (evt) => {
+  if (evt.key === window.util.Key.ESCAPE) {
+    evt.preventDefault();
+    closeErrorWindow();
+  }
+};
+
+const onEscPressSuccess = (evt) => {
+  if (evt.key === window.util.Key.ESCAPE) {
+    evt.preventDefault();
+    closeSuccessWindow();
+  }
+};
+
+const closeErrorWindow = () => {
+  errorElement.remove();
+
+  document.removeEventListener(`keydown`, onEscPressError);
+};
+
+const closeSuccessWindow = () => {
+  successElement.remove();
+
+  document.removeEventListener(`keydown`, onEscPressSuccess);
+};
+
 const errorWindow = () => {
   document.body.insertAdjacentElement(`afterbegin`, errorElement);
 
   errorBtn.addEventListener(`click`, () => {
-    errorElement.remove();
+    closeErrorWindow();
   });
 
-  document.addEventListener(`keydown`, (evt) => {
-    window.util.isEscEvent(evt, errorElement);
-  });
+  document.addEventListener(`keydown`, onEscPressError);
 
   errorElement.addEventListener(`click`, () => {
-    errorElement.remove();
+    closeErrorWindow();
   });
 };
 
 const successWindow = () => {
   document.body.insertAdjacentElement(`afterbegin`, successElement);
 
-  document.addEventListener(`keydown`, (evt) => {
-    window.util.isEscEvent(evt, successElement);
-  });
+  document.addEventListener(`keydown`, onEscPressSuccess);
 
   successElement.addEventListener(`click`, () => {
-    successElement.remove();
+    closeSuccessWindow();
   });
 };
 
@@ -121,7 +143,7 @@ const getGuestsLimits = (rooms) => {
   return rooms <= 3 ? [1, rooms] : [0];
 };
 
-const validateGuests = () => {
+const onValidateGuests = () => {
   let validationMsg = ``;
 
   const rooms = roomsAmount.value;
@@ -135,20 +157,20 @@ const validateGuests = () => {
   guestsAmount.setCustomValidity(validationMsg);
 };
 
-const validatePrice = () => {
+const onValidatePrice = () => {
   price.min = MIN_PRICE_VALIDATION[typeHouse.value];
   price.placeholder = MIN_PRICE_VALIDATION[typeHouse.value];
 };
 
-const validateCheckOut = () => {
+const onValidateCheckOut = () => {
   timeOut.value = timeIn.value;
 };
 
-const validateCheckIn = () => {
+const onValidateCheckIn = () => {
   timeIn.value = timeOut.value;
 };
 
-titleAd.addEventListener(`input`, () => {
+const onValidateText = () => {
   const titleLength = titleAd.value.length;
 
   if (titleLength < MIN_TITLE_LENGTH) {
@@ -160,13 +182,14 @@ titleAd.addEventListener(`input`, () => {
   }
 
   titleAd.reportValidity();
-});
+};
 
-roomsAmount.addEventListener(`change`, validateGuests);
-guestsAmount.addEventListener(`change`, validateGuests);
-typeHouse.addEventListener(`change`, validatePrice);
-timeIn.addEventListener(`change`, validateCheckOut);
-timeOut.addEventListener(`change`, validateCheckIn);
+titleAd.addEventListener(`input`, onValidateText);
+roomsAmount.addEventListener(`change`, onValidateGuests);
+guestsAmount.addEventListener(`change`, onValidateGuests);
+typeHouse.addEventListener(`change`, onValidatePrice);
+timeIn.addEventListener(`change`, onValidateCheckOut);
+timeOut.addEventListener(`change`, onValidateCheckIn);
 
 adForm.addEventListener(`submit`, (evt) => {
   window.backend.save(new FormData(adForm), () => {
@@ -190,6 +213,6 @@ photoChooser.addEventListener(`change`, () => {
 
 window.form = {
   adForm,
-  validateGuests,
-  validatePrice
+  onValidateGuests,
+  onValidatePrice
 };
