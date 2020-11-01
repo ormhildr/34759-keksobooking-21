@@ -1,13 +1,11 @@
 'use strict';
 
-const SERVER_URL = {
+const ServerURL = {
   load: `https://21.javascript.pages.academy/keksobooking/data`,
   save: `https://21.javascript.pages.academy/keksobooking`
 };
 
-const StatusCode = {
-  OK: 200
-};
+const SUCCESS_STATUS = 200;
 const TIMEOUT_IN_MS = 10000;
 
 const createXhr = (request, url, onLoad, onError) => {
@@ -15,7 +13,7 @@ const createXhr = (request, url, onLoad, onError) => {
   xhr.responseType = `json`;
 
   xhr.addEventListener(`load`, () => {
-    if (xhr.status === StatusCode.OK) {
+    if (xhr.status === SUCCESS_STATUS) {
       onLoad(xhr.response);
     } else {
       onError(`Статус ответа: ${xhr.status} ${xhr.statusText}`);
@@ -36,11 +34,11 @@ const createXhr = (request, url, onLoad, onError) => {
 };
 
 const load = (onLoad, onError) => {
-  createXhr(`GET`, SERVER_URL.load, onLoad, onError).send();
+  createXhr(`GET`, ServerURL.load, onLoad, onError).send();
 };
 
 const save = (data, onLoad, onError) => {
-  createXhr(`POST`, SERVER_URL.save, onLoad, onError).send(data);
+  createXhr(`POST`, ServerURL.save, onLoad, onError).send(data);
 };
 
 window.backend = {

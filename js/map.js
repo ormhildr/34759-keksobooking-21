@@ -48,7 +48,7 @@ const updateAds = (ads) => {
   window.util.removeAdPins();
 
   ads.forEach((ad) => {
-    const pin = window.pin.renderPin(ad);
+    const pin = window.renderPin(ad);
     pins.appendChild(pin);
 
     pin.addEventListener(`click`, () => {
@@ -58,7 +58,7 @@ const updateAds = (ads) => {
 
       removeActiveCard();
 
-      mapFilters.before(window.card.renderCard(ad));
+      mapFilters.before(window.renderCard(ad));
 
       const currentCard = map.querySelector(`.map__card`);
       const cardCloser = currentCard.querySelector(`.popup__close`);
@@ -114,7 +114,6 @@ const enablePage = () => {
     map.classList.remove(`map--faded`);
 
     setFormEnabled(adForm, true);
-    setFormEnabled(window.filter.mapForm, true);
     isPageEnabled = true;
 
     window.form.onValidateGuests();
@@ -122,6 +121,7 @@ const enablePage = () => {
     adAddress.value = getAddressCoordinates();
 
     window.backend.load(successHandler, errorHandler);
+    setFormEnabled(window.filter.mapForm, true);
   }
 };
 
@@ -173,8 +173,8 @@ mainPin.addEventListener(`mousedown`, (evt) => {
     const minPinY = LocationLimits.MIN_Y - MainPinSizes.HEIGHT;
     const maxPinY = LocationLimits.MAX_Y - MainPinSizes.HEIGHT;
 
-    const minPinX = LocationLimits.MIN_X - MainPinSizes.WIDTH / 2;
-    const maxPinX = LocationLimits.MAX_X - MainPinSizes.WIDTH / 2;
+    const minPinX = LocationLimits.MIN_X - Math.floor(MainPinSizes.WIDTH / 2);
+    const maxPinX = LocationLimits.MAX_X - Math.floor(MainPinSizes.WIDTH / 2);
 
     const currentLocationX = mainPin.offsetLeft - shift.x;
     const currentLocationY = mainPin.offsetTop - shift.y;

@@ -26,32 +26,20 @@ const houseGuests = mapForm.querySelector(`#housing-guests`);
 const houseFeatures = mapForm.querySelector(`#housing-features`);
 
 const filterType = (ad) => {
-  if (houseType.value === DEFAULT_INPUT_FILTER || ad.offer.type === houseType.value) {
-    return true;
-  }
-  return false;
+  return houseType.value === DEFAULT_INPUT_FILTER || ad.offer.type === houseType.value;
 };
 
 const filterPrice = (ad) => {
-  if (housePrice.value === DEFAULT_INPUT_FILTER ||
-        (priceRange[housePrice.value].MIN <= ad.offer.price && priceRange[housePrice.value].MAX >= ad.offer.price)) {
-    return true;
-  }
-  return false;
+  return housePrice.value === DEFAULT_INPUT_FILTER ||
+    priceRange[housePrice.value].MIN <= ad.offer.price && priceRange[housePrice.value].MAX >= ad.offer.price;
 };
 
 const filterRooms = (ad) => {
-  if (houseRooms.value === DEFAULT_INPUT_FILTER || String(ad.offer.rooms) === houseRooms.value) {
-    return true;
-  }
-  return false;
+  return houseRooms.value === DEFAULT_INPUT_FILTER || String(ad.offer.rooms) === houseRooms.value;
 };
 
 const filterGuests = (ad) => {
-  if (houseGuests.value === DEFAULT_INPUT_FILTER || String(ad.offer.guests) === houseGuests.value) {
-    return true;
-  }
-  return false;
+  return houseGuests.value === DEFAULT_INPUT_FILTER || String(ad.offer.guests) === houseGuests.value;
 };
 
 const filterFeatures = (ad) => {

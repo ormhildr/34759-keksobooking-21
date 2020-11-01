@@ -105,7 +105,7 @@ const closeSuccessWindow = () => {
   document.removeEventListener(`keydown`, onEscPressSuccess);
 };
 
-const errorWindow = () => {
+const getErrorWindow = () => {
   document.body.insertAdjacentElement(`afterbegin`, errorElement);
 
   errorBtn.addEventListener(`click`, () => {
@@ -119,7 +119,7 @@ const errorWindow = () => {
   });
 };
 
-const successWindow = () => {
+const getSuccessWindow = () => {
   document.body.insertAdjacentElement(`afterbegin`, successElement);
 
   document.addEventListener(`keydown`, onEscPressSuccess);
@@ -180,8 +180,6 @@ const onValidateText = () => {
   } else {
     titleAd.setCustomValidity(``);
   }
-
-  titleAd.reportValidity();
 };
 
 titleAd.addEventListener(`input`, onValidateText);
@@ -193,9 +191,9 @@ timeOut.addEventListener(`change`, onValidateCheckIn);
 
 adForm.addEventListener(`submit`, (evt) => {
   window.backend.save(new FormData(adForm), () => {
-    successWindow();
+    getSuccessWindow();
     resetForm();
-  }, errorWindow);
+  }, getErrorWindow);
   evt.preventDefault();
 });
 
