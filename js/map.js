@@ -1,8 +1,8 @@
 'use strict';
 
 const MainPinSizes = {
-  WIDTH: 65,
-  HEIGHT: 87
+  SIDE: 65,
+  TIP: 22
 };
 
 const LocationLimits = {
@@ -47,9 +47,11 @@ const removeActiveCard = () => {
 const updateAds = (ads) => {
   window.util.removeAdPins();
 
+  let fragment = new DocumentFragment();
+
   ads.forEach((ad) => {
     const pin = window.renderPin(ad);
-    pins.appendChild(pin);
+    fragment.append(pin);
 
     pin.addEventListener(`click`, () => {
       removeActivePin();
@@ -71,10 +73,7 @@ const updateAds = (ads) => {
       };
 
       const onEscPressCard = (evt) => {
-        if (evt.key === window.util.Key.ESCAPE) {
-          evt.preventDefault();
-          closeCard();
-        }
+        window.util.escPress(evt, closeCard);
       };
 
       cardCloser.addEventListener(`click`, () => {
@@ -84,6 +83,8 @@ const updateAds = (ads) => {
       document.addEventListener(`keydown`, onEscPressCard);
     });
   });
+
+  pins.append(fragment);
 };
 
 const onFilteredPins = window.debounce(() => {
@@ -96,7 +97,7 @@ const successHandler = (data) => {
   updateAds(window.filter.getFilterAds(mainAds));
 };
 
-const errorHandler = function (errorMessage) {
+const errorHandler = (errorMessage) => {
   const node = document.createElement(`div`);
   node.style = `z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white`;
   node.style.position = `fixed`;
@@ -126,13 +127,9 @@ const enablePage = () => {
 };
 
 const getAddressCoordinates = () => {
-  let addressCoordinates;
-
-  if (isPageEnabled) {
-    addressCoordinates = `${Math.floor(parseInt(mainPin.style.left, 10) + MainPinSizes.WIDTH / 2)}, ${Math.floor(parseInt(mainPin.style.top, 10) + MainPinSizes.HEIGHT)}`;
-  } else {
-    addressCoordinates = `${Math.floor(parseInt(mainPin.style.left, 10) + MainPinSizes.WIDTH / 2)}, ${Math.floor(parseInt(mainPin.style.top, 10) + MainPinSizes.HEIGHT / 2)}`;
-  }
+  let addressCoordinates = `${Math.floor(parseInt(mainPin.style.left, 10) + MainPinSizes.SIDE / 2)},
+  ${isPageEnabled ? Math.floor(parseInt(mainPin.style.top, 10) + MainPinSizes.SIDE + MainPinSizes.TIP) :
+    Math.floor(parseInt(mainPin.style.top, 10) + MainPinSizes.SIDE / 2)}`;
 
   return addressCoordinates;
 };
@@ -170,11 +167,11 @@ mainPin.addEventListener(`mousedown`, (evt) => {
       y: moveEvt.clientY
     };
 
-    const minPinY = LocationLimits.MIN_Y - MainPinSizes.HEIGHT;
-    const maxPinY = LocationLimits.MAX_Y - MainPinSizes.HEIGHT;
+    const minPinY = LocationLimits.MIN_Y - (MainPinSizes.SIDE + MainPinSizes.TIP);
+    const maxPinY = LocationLimits.MAX_Y - (MainPinSizes.SIDE + MainPinSizes.TIP);
 
-    const minPinX = LocationLimits.MIN_X - Math.floor(MainPinSizes.WIDTH / 2);
-    const maxPinX = LocationLimits.MAX_X - Math.floor(MainPinSizes.WIDTH / 2);
+    const minPinX = LocationLimits.MIN_X - Math.floor(MainPinSizes.SIDE / 2);
+    const maxPinX = LocationLimits.MAX_X - Math.floor(MainPinSizes.SIDE / 2);
 
     const currentLocationX = mainPin.offsetLeft - shift.x;
     const currentLocationY = mainPin.offsetTop - shift.y;

@@ -10,14 +10,14 @@ const OfferType = {
   }
 };
 
-const ALL_FEATURES = [
-  `wifi`,
-  `dishwasher`,
-  `parking`,
-  `washer`,
-  `elevator`,
-  `conditioner`
-];
+const AllFeatures = {
+  WIFI: `wifi`,
+  DISHWASHER: `dishwasher`,
+  PARKING: `parking`,
+  WASHER: `washer`,
+  ELEVATOR: `elevator`,
+  CONDITIONER: `conditioner`
+};
 
 const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
@@ -49,11 +49,11 @@ window.renderCard = (ad) => {
   popupCapacity.textContent = `${ad.offer.rooms} комнаты для ${ad.offer.guests} гостей`;
   popupTime.textContent = `Заезд после ${ad.offer.checkin}, выезд до ${ad.offer.checkout}`;
 
-  ALL_FEATURES.forEach((el) => {
-    if (!ad.offer.features.includes(el)) {
-      popupFeatures.removeChild(popupFeatures.querySelector(`.popup__feature--${el}`));
+  for (let el in AllFeatures) {
+    if (!ad.offer.features.includes(AllFeatures[el])) {
+      popupFeatures.removeChild(popupFeatures.querySelector(`.popup__feature--${AllFeatures[el]}`));
     }
-  });
+  }
 
   popupDescr.textContent = ad.offer.description;
 

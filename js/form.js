@@ -80,17 +80,11 @@ const loadPhoto = (currentFile, currentPhoto) => {
 };
 
 const onEscPressError = (evt) => {
-  if (evt.key === window.util.Key.ESCAPE) {
-    evt.preventDefault();
-    closeErrorWindow();
-  }
+  window.util.escPress(evt, closeErrorWindow);
 };
 
 const onEscPressSuccess = (evt) => {
-  if (evt.key === window.util.Key.ESCAPE) {
-    evt.preventDefault();
-    closeSuccessWindow();
-  }
+  window.util.escPress(evt, closeSuccessWindow);
 };
 
 const closeErrorWindow = () => {
@@ -146,8 +140,8 @@ const getGuestsLimits = (rooms) => {
 const onValidateGuests = () => {
   let validationMsg = ``;
 
-  const rooms = roomsAmount.value;
-  const guests = guestsAmount.value;
+  const rooms = Number(roomsAmount.value);
+  const guests = Number(guestsAmount.value);
 
   const limits = getGuestsLimits(rooms);
   if (!limits.includes(guests)) {

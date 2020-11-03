@@ -1,12 +1,13 @@
 'use strict';
 
 (() => {
-  const Key = {
-    ESCAPE: `Escape`
-  };
-
   window.util = {
-    Key,
+    escPress: (evt, cb) => {
+      if (evt.key === `Escape`) {
+        evt.preventDefault();
+        cb();
+      }
+    },
     removeAdPins: () => {
       document.querySelectorAll(`.map__pin`).forEach((el) => {
         if (!el.classList.contains(`map__pin--main`)) {
