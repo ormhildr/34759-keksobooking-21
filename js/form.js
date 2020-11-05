@@ -3,25 +3,25 @@
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 
-const PHOTO_SIZES = {
-  width: 70,
-  height: 70
+const PhotoSizes = {
+  WIDTH: 70,
+  HEIGHT: 70
 };
 
 const FILE_TYPES = [`gif`, `jpg`, `jpeg`, `png`];
 
-const GUESTS_VALIDATION_MSG = {
+const guestsValidationMessage = {
   1: `«для 1 гостя»`,
   2: `«для 2 гостей» или «для 1 гостя»`,
   3: `«для 3 гостей, «для 2 гостей» или «для 1 гостя»`,
   100: `«не для гостей»`
 };
 
-const MIN_PRICE_VALIDATION = {
-  bungalow: `0`,
-  flat: `1000`,
-  house: `5000`,
-  palace: `10000`
+const MinPriceValidation = {
+  BUNGALOW: `0`,
+  FLAT: `1000`,
+  HOUSE: `5000`,
+  PALACE: `10000`
 };
 
 const adForm = document.querySelector(`.ad-form`);
@@ -64,8 +64,8 @@ const loadPhoto = (currentFile, currentPhoto) => {
       if (!currentPhoto.firstChild) {
         const newImg = document.createElement(`img`);
         newImg.src = reader.result;
-        newImg.width = PHOTO_SIZES.width;
-        newImg.height = PHOTO_SIZES.height;
+        newImg.width = PhotoSizes.WIDTH;
+        newImg.height = PhotoSizes.HEIGHT;
         currentPhoto.append(newImg);
       } else {
         const photo = currentPhoto.firstElementChild;
@@ -145,15 +145,15 @@ const onValidateGuests = () => {
 
   const limits = getGuestsLimits(rooms);
   if (!limits.includes(guests)) {
-    validationMsg = GUESTS_VALIDATION_MSG[rooms];
+    validationMsg = guestsValidationMessage[rooms];
   }
 
   guestsAmount.setCustomValidity(validationMsg);
 };
 
 const onValidatePrice = () => {
-  price.min = MIN_PRICE_VALIDATION[typeHouse.value];
-  price.placeholder = MIN_PRICE_VALIDATION[typeHouse.value];
+  price.min = MinPriceValidation[typeHouse.value.toUpperCase()];
+  price.placeholder = MinPriceValidation[typeHouse.value.toUpperCase()];
 };
 
 const onValidateCheckOut = () => {

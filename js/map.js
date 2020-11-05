@@ -2,7 +2,7 @@
 
 const MainPinSizes = {
   SIDE: 65,
-  TIP: 22
+  TIP: 16
 };
 
 const LocationLimits = {

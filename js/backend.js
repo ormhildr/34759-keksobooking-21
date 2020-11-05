@@ -1,8 +1,8 @@
 'use strict';
 
 const ServerURL = {
-  load: `https://21.javascript.pages.academy/keksobooking/data`,
-  save: `https://21.javascript.pages.academy/keksobooking`
+  LOAD: `https://21.javascript.pages.academy/keksobooking/data`,
+  SAVE: `https://21.javascript.pages.academy/keksobooking`
 };
 
 const SUCCESS_STATUS = 200;
@@ -34,11 +34,11 @@ const createXhr = (request, url, onLoad, onError) => {
 };
 
 const load = (onLoad, onError) => {
-  createXhr(`GET`, ServerURL.load, onLoad, onError).send();
+  createXhr(`GET`, ServerURL.LOAD, onLoad, onError).send();
 };
 
 const save = (data, onLoad, onError) => {
-  createXhr(`POST`, ServerURL.save, onLoad, onError).send(data);
+  createXhr(`POST`, ServerURL.SAVE, onLoad, onError).send(data);
 };
 
 window.backend = {
